@@ -14,6 +14,7 @@ import {
   FetchTokenBalanceSchema,
   fetchTokenBalance,
 } from "./tools/FetchTokenBalance";
+import { FetchQuoteSchema, fetchQuote } from "./tools/FetchQuote";
 
 const server = new Server(
   {
@@ -44,6 +45,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         name: "fetch_token_balance",
         description: "Get the balance of a token",
         inputSchema: zodToJsonSchema(FetchTokenBalanceSchema),
+      },
+      {
+        name: "fetch_quote",
+        description: "Get the price of a token",
+        inputSchema: zodToJsonSchema(FetchQuoteSchema),
       },
     ],
   };
@@ -114,8 +120,23 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
 
+      case "fetch_quote": {
+        const args = FetchQuoteSchema.parse(request.params.arguments);
+        const result = await fetchQuote(args);
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: result.toString(),
+              description: "The price of the token in USD",
+            },
+          ],
+        };
+      }
+
       default:
-        throw new Error(`Unknown resource: ${request.params.name}`);
+        throw new Error(`Unknown tool: ${request.params.name}`);
     }
   } catch (error) {
     if (error instanceof z.ZodError) {
