@@ -8,12 +8,12 @@ import { z } from "zod";
 import zodToJsonSchema from "zod-to-json-schema";
 
 import { version } from "../package.json";
-import { FetchBalanceSchema, fetchBalance } from "./operations/FetchBalance";
-import { ReadContractSchema, readContract } from "./operations/ReadContract";
+import { FetchBalanceSchema, fetchBalance } from "./tools/FetchBalance";
+import { ReadContractSchema, readContract } from "./tools/ReadContract";
 import {
   FetchTokenBalanceSchema,
   fetchTokenBalance,
-} from "./operations/FetchTokenBalance";
+} from "./tools/FetchTokenBalance";
 
 const server = new Server(
   {
