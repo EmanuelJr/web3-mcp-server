@@ -7,6 +7,9 @@
     "build": "npx tsc",
     "inspect": "npx @modelcontextprotocol/inspector node dist/index.js"
   },
+  "bin": {
+    "web3-mcp-server": "dist/index.js"
+  },
   "author": "Emanuel Junior",
   "license": "MIT",
   "description": "MCP server for web3",
