@@ -1,5 +1,7 @@
 # Web3 MCP Server
 
+[![smithery badge](https://smithery.ai/badge/web3-mcp-server)](https://smithery.ai/server/web3-mcp-server)
+
 A Model Context Protocol (MCP) server implementation for Web3 interactions on EVM chains. This server enables seamless interaction with blockchain networks through the Model Context Protocol.
 
 ## 🚀 Features
@@ -11,6 +13,14 @@ A Model Context Protocol (MCP) server implementation for Web3 interactions on EV
 ## 🔧 Configuration
 
 ### Claude Desktop Integration
+
+### Installing via Smithery
+
+To install Web3 MCP Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/web3-mcp-server):
+
+```bash
+npx -y @smithery/cli install web3-mcp-server --client claude
+```
 
 #### Using NPX
 
