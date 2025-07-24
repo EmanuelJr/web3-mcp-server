@@ -8,6 +8,7 @@ A Model Context Protocol (MCP) server implementation for Web3 interactions on EV
 
 - 📊 Fetch token balances across multiple chains
 - 📝 Call smart contract functions
+- 💰 Native and ERC-20 token transfer
 - 🔗 Support for multiple EVM-compatible chains
 
 ## 🔧 Configuration
@@ -31,7 +32,10 @@ Add the following configuration to your Claude Desktop settings:
   "mcpServers": {
     "web3": {
       "command": "npx",
-      "args": ["-y", "web3-mcp-server"]
+      "args": ["-y", "web3-mcp-server"],
+      "env": {
+        "PRIVATE_KEY": "0xYour-wallet-private-key (optional)"
+      }
     }
   }
 }
@@ -46,7 +50,10 @@ For Docker-based deployment, use this configuration:
   "mcpServers": {
     "web3": {
       "command": "docker",
-      "args": ["run", "-i", "--rm", "emanueljr/web3-mcp-server"]
+      "args": ["run", "-i", "--rm", "emanueljr/web3-mcp-server"],
+      "env": {
+        "PRIVATE_KEY": "0xYour-wallet-private-key (optional)"
+      }
     }
   }
 }

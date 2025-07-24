@@ -6,9 +6,7 @@ import {
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
-import zodToJsonSchema from "zod-to-json-schema";
 
-import { version } from "../package.json";
 import { FetchBalanceSchema, fetchBalance } from "./tools/FetchBalance";
 import { ReadContractSchema, readContract } from "./tools/ReadContract";
 import {
@@ -16,6 +14,9 @@ import {
   fetchTokenBalance,
 } from "./tools/FetchTokenBalance";
 import { FetchQuoteSchema, fetchQuote } from "./tools/FetchQuote";
+import { TransferTokenSchema, transferToken } from "./tools/TransferToken";
+import { TransferSchema, transfer } from "./tools/Transfer";
+import { version } from "../package.json";
 
 const server = new Server(
   {
@@ -30,29 +31,46 @@ const server = new Server(
 );
 
 server.setRequestHandler(ListToolsRequestSchema, async () => {
+  const tools = [
+    {
+      name: "fetch_balance",
+      description: "Get the balance of a wallet",
+      inputSchema: z.toJSONSchema(FetchBalanceSchema),
+    },
+    {
+      name: "read_contract",
+      description: "Read a value from a contract",
+      inputSchema: z.toJSONSchema(ReadContractSchema),
+    },
+    {
+      name: "fetch_token_balance",
+      description: "Get the balance of a token",
+      inputSchema: z.toJSONSchema(FetchTokenBalanceSchema),
+    },
+    {
+      name: "fetch_quote",
+      description: "Get the price of a token",
+      inputSchema: z.toJSONSchema(FetchQuoteSchema),
+    },
+  ];
+
+  if (process.env.PRIVATE_KEY) {
+    tools.push(
+      {
+        name: "transfer",
+        description: "Transfer a native token to a wallet",
+        inputSchema: z.toJSONSchema(TransferSchema),
+      },
+      {
+        name: "transfer_token",
+        description: "Transfer a ERC20 token to a wallet",
+        inputSchema: z.toJSONSchema(TransferTokenSchema),
+      }
+    );
+  }
+
   return {
-    tools: [
-      {
-        name: "fetch_balance",
-        description: "Get the balance of a wallet",
-        inputSchema: zodToJsonSchema(FetchBalanceSchema),
-      },
-      {
-        name: "read_contract",
-        description: "Read a value from a contract",
-        inputSchema: zodToJsonSchema(ReadContractSchema),
-      },
-      {
-        name: "fetch_token_balance",
-        description: "Get the balance of a token",
-        inputSchema: zodToJsonSchema(FetchTokenBalanceSchema),
-      },
-      {
-        name: "fetch_quote",
-        description: "Get the price of a token",
-        inputSchema: zodToJsonSchema(FetchQuoteSchema),
-      },
-    ],
+    tools,
   };
 });
 
@@ -136,12 +154,43 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
 
-      default:
+      case "transfer": {
+        const args = TransferSchema.parse(request.params.arguments);
+        const result = await transfer(args);
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: result.toString(),
+              description: "The transaction hash of the transfer",
+            },
+          ],
+        };
+      }
+
+      case "transfer_token": {
+        const args = TransferTokenSchema.parse(request.params.arguments);
+        const result = await transferToken(args);
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: result.toString(),
+              description: "The transaction hash of the token transfer",
+            },
+          ],
+        };
+      }
+
+      default: {
         throw new Error(`Unknown tool: ${request.params.name}`);
+      }
     }
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new Error(`Invalid input: ${JSON.stringify(error.errors)}`);
+      throw new Error(`Invalid input: ${JSON.stringify(error.issues)}`);
     }
 
     throw error;
