@@ -18,9 +18,8 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.9.0",
+    "@modelcontextprotocol/sdk": "^1.17.0",
     "viem": "^2.33.0",
-    "zod": "^3.24.2",
-    "zod-to-json-schema": "^3.24.5"
+    "zod": "^4.0.9"
   }
 }
