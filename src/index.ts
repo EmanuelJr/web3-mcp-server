@@ -16,6 +16,8 @@ import {
   fetchTokenBalance,
 } from "./tools/FetchTokenBalance";
 import { FetchQuoteSchema, fetchQuote } from "./tools/FetchQuote";
+import { TransferTokenSchema, transferToken } from "./tools/TransferToken";
+import { TransferSchema, transfer } from "./tools/Transfer";
 
 const server = new Server(
   {
@@ -51,6 +53,16 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         name: "fetch_quote",
         description: "Get the price of a token",
         inputSchema: zodToJsonSchema(FetchQuoteSchema),
+      },
+      {
+        name: "transfer",
+        description: "Transfer a native token to a wallet",
+        inputSchema: zodToJsonSchema(TransferSchema),
+      },
+      {
+        name: "transfer_token",
+        description: "Transfer a ERC20 token to a wallet",
+        inputSchema: zodToJsonSchema(TransferTokenSchema),
       },
     ],
   };
@@ -136,8 +148,39 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
 
-      default:
+      case "transfer": {
+        const args = TransferSchema.parse(request.params.arguments);
+        const result = await transfer(args);
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: result.toString(),
+              description: "The transaction hash of the transfer",
+            },
+          ],
+        };
+      }
+
+      case "transfer_token": {
+        const args = TransferTokenSchema.parse(request.params.arguments);
+        const result = await transferToken(args);
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: result.toString(),
+              description: "The transaction hash of the token transfer",
+            },
+          ],
+        };
+      }
+
+      default: {
         throw new Error(`Unknown tool: ${request.params.name}`);
+      }
     }
   } catch (error) {
     if (error instanceof z.ZodError) {

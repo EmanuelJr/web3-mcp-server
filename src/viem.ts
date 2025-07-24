@@ -11,7 +11,7 @@ import * as chains from "viem/chains";
 
 const chainsList = Object.values(chains);
 
-export const getChainById = (id: number) => {
+export const getChainById = (id: number): Chain => {
   return extractChain({
     chains: chainsList,
     id: id as (typeof chainsList)[number]["id"],
