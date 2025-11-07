@@ -4,6 +4,10 @@
 
 A Model Context Protocol (MCP) server implementation for Web3 interactions on EVM chains. This server enables seamless interaction with blockchain networks through the Model Context Protocol.
 
+<a href="https://glama.ai/mcp/servers/@EmanuelJr/web3-mcp-server">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@EmanuelJr/web3-mcp-server/badge" alt="web3-mcp-server MCP server" />
+</a>
+
 ## 🚀 Features
 
 - 📊 Fetch token balances across multiple chains
